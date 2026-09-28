@@ -35,9 +35,37 @@ class Clan():
         self.apiToken = token
         self.clanTag = tag
 
-    def get_info(self):
+    def getWarLog(self):
         encoded_tag = self.clanTag.replace("#", "%23")
         url = f"https://api.clashofclans.com/v1/clans/{encoded_tag}/warlog"
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self.apiToken}"
+        }
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        return response.json()
+
+    def getCurrentWar(self):
+        encoded_tag = self.clanTag.replace("#", "%23")
+        url = f"https://api.clashofclans.com/v1/clans/{encoded_tag}/currentwar"
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self.apiToken}"
+        }
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        return response.json()
+
+    def getCurrentWarMembers(self):
+        encoded_tag = self.clanTag.replace("#", "%23")
+        url = f"https://api.clashofclans.com/v1/clans/{encoded_tag}/currentwar"
 
         headers = {
             "Accept": "application/json",

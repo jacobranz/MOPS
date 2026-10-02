@@ -92,21 +92,18 @@ class CapitalRaid():
             "state": self.data["state"],
             "raidStart": self.data["startTime"],
             "raidEnd": self.data["endTime"],
-            "totalLoot": self.data["totalLoot"],
-            "raidCount": self.data["completedRaidCount"],
-            "attackCount": self.data["attackCount"],
-            "destrDistrictCount": self.data["destroyedDistrictCount"],
+            "totalLoot": self.data["capitalTotalLoot"],
+            "raidCount": self.data["raidsCompleted"],
+            "attackCount": self.data["totalAttacks"],
+            "destrDistrictCount": self.data["enemyDistrictsDestroyed"],
             "offenseReward": self.data["offensiveReward"],
             "defenseReward": self.data["defensiveReward"],
-            "defenseLoot": self.data["totalDefensiveLoot"],
-            "defenseAttacks": self.data["defenseAttackCount"],
-            "defenseDestrDistrictCount": self.data["defensiveDestroyedDistrictCount"]
         }
 
     def parseRaidMembers(self):
         self.members = []
 
-        for member in self.data["members"]:
+        for member in self.data.get("members", []):
             self.members.append({
                 "tag": member["tag"],
                 "name": member["name"],

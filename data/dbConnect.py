@@ -171,10 +171,7 @@ class dbHelper():
                     attack_count,
                     destr_districts,
                     offensive_reward,
-                    defensive_reward,
-                    total_defense_loot,
-                    defense_attack_count,
-                    defense_destr_districts
+                    defensive_reward
                 )
                 VALUES (
                     %(state)s,
@@ -185,11 +182,44 @@ class dbHelper():
                     %(attackCount)s,
                     %(destrDistrictCount)s,
                     %(offenseReward)s,
-                    %(defenseReward)s,
-                    %(defenseLoot)s,
-                    %(defenseAttacks)s,
-                    %(defenseDestrDistrictCount)s
+                    %(defenseReward)s
                 )
+                RETURNING raid_ID
             """, raidSeason)
 
-        self.conn.commit()
+            self.raidId = self.cursor.fetchone()[0]
+
+            self.conn.commit()
+            return self.raidId
+
+    def addRaidMembers(self, raidMember, raidSeason):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                INSERT INTO raid_members (
+                    raid_id,
+                    tag,
+                    name,
+                    attacks,
+                    attack_limit,
+                    bonus_attack_limit,
+                    resources_looted
+                )
+                VALUES (
+                    %(raidID)s,
+                    %(tag)s,
+                    %(name)s,
+                    %(attacks)s,
+                    %(attackLimit)s,
+                    %(bonusAttackLimit)s,
+                    %(resourcesLooted)s
+                )
+                RETURNING raid_member_id
+            """, {
+                **raidMember,
+                "raidID": raidSeason
+            })
+
+            self.raidMemberId = self.cursor.fetchone()[0]
+
+            self.conn.commit()
+            return self.raidMemberId

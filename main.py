@@ -76,6 +76,12 @@ if getWar == 1:
 else:
     print("War data not running.")
 
-raid = CapitalRaid(getCapitalRaids())
-result = raid.parseRaids()
-db.addRaidSeasons(result)
+
+for raidData in getCapitalRaids():
+    raid = CapitalRaid(raidData)
+    result = raid.parseRaids()
+    raidID = db.addRaidSeasons(result)
+
+    members = raid.parseRaidMembers()
+    for member in members:
+        raidMemberId = db.addRaidMembers(member, raidID)

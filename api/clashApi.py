@@ -98,6 +98,7 @@ class Clan():
 
     def getCapitalRaidSeason(self):
         encoded_tag = self.clanTag.replace("#", "%23")
+
         url = f"https://api.clashofclans.com/v1/clans/{encoded_tag}/capitalraidseasons"
 
         headers = {
@@ -108,4 +109,4 @@ class Clan():
         response = requests.get(url, headers=headers)
         response.raise_for_status()
 
-        return response.json()["items"]
+        return response.json()

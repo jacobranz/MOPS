@@ -16,9 +16,6 @@ clanTags = [
     "#2Q2YL8VGO"
 ]
 
-## Connect to database
-db = dbHelper()
-
 def getWarLog():
     for tag in clanTags:
         clan = Clan(API_TOKEN, tag)
@@ -43,39 +40,48 @@ def getCapitalRaids():
         clan = Clan(API_TOKEN, tag)
         return clan.getCapitalRaidSeason()["items"]
 
-#with open("data.json", "w") as f:
-#    json.dump(getCapitalRaids(), f)
+def main():
+    ## Connect to database
+    db = dbHelper()
 
-#for warData in getWarLog()['items']:
-#    war = War(warData)
-#    result = war.parseWar()
-#    db.addWar(result)
+    #with open("data.json", "w") as f:
+    #    json.dump(getCapitalRaids(), f)
 
-if getWar == 1:
-    war = War(getCurrentWar())
-    result = war.parseCurrentWar()
-    warId = db.addCurrentWar(result)
+    #for warData in getWarLog()['items']:
+    #    war = War(warData)
+    #    result = war.parseWar()
+    #    db.addWar(result)
 
-    members = getCurrentWarMembers()
-    for member in members["clan"]:
-        warMember = War(member)
-        memberResult = warMember.parseWarMembers()
-        warMemberId = db.addWarMembers(memberResult, warId)
-        for attack in member.get("attacks", []):
-            warAttack = War(attack)
-            attackResult = warAttack.parseWarAttacks()
-            db.addWarAttacks(attackResult, warMemberId)
-    for opponent in members["opponent"]:
-        opponentMember = War(opponent)
-        opponentResult = opponentMember.parseWarMembers()
-        warOpponentId = db.addWarMembers(opponentResult, warId)
-        for attack in opponent.get("attacks", []):
-            warAttack = War(attack)
-            attackResult = warAttack.parseWarAttacks()
-            db.addWarAttacks(attackResult, warOpponentId)
-else:
-    print("War data not running.")
+    if getWar == 1:
+        war = War(getCurrentWar())
+        result = war.parseCurrentWar()
+        warId = db.addCurrentWar(result)
 
-raid = CapitalRaid(getCapitalRaids())
-result = raid.parseRaids()
-db.addRaidSeasons(result)
+        members = getCurrentWarMembers()
+        for member in members["clan"]:
+            warMember = War(member)
+            memberResult = warMember.parseWarMembers()
+            warMemberId = db.addWarMembers(memberResult, warId)
+            for attack in member.get("attacks", []):
+                warAttack = War(attack)
+                attackResult = warAttack.parseWarAttacks()
+                db.addWarAttacks(attackResult, warMemberId)
+        for opponent in members["opponent"]:
+            opponentMember = War(opponent)
+            opponentResult = opponentMember.parseWarMembers()
+            warOpponentId = db.addWarMembers(opponentResult, warId)
+            for attack in opponent.get("attacks", []):
+                warAttack = War(attack)
+                attackResult = warAttack.parseWarAttacks()
+                db.addWarAttacks(attackResult, warOpponentId)
+    else:
+        print("War data not running.")
+
+    raid = CapitalRaid(getCapitalRaids())
+    result = raid.parseRaids()
+    db.addRaidSeasons(result)
+
+    return 0
+
+if __name__ == "__main__":
+    exit(main())

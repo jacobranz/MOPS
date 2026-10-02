@@ -77,15 +77,14 @@ def main():
     else:
         print("War data not running.")
 
-for raidData in getCapitalRaids():
-    raid = CapitalRaid(raidData)
-    result = raid.parseRaids()
-    raidID = db.addRaidSeasons(result)
+    for raidData in getCapitalRaids():
+        raid = CapitalRaid(raidData)
+        result = raid.parseRaids()
+        raidID = db.addRaidSeasons(result)
 
-    members = raid.parseRaidMembers()
-    for member in members:
-        raidMemberId = db.addRaidMembers(member, raidID)
-
+        members = raid.parseRaidMembers()
+        for member in members:
+            raidMemberId = db.addRaidMembers(member, raidID)
 
     return 0
 

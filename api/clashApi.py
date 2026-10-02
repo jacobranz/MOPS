@@ -96,17 +96,16 @@ class Clan():
 
         return self.memberList
 
-# Instantiate class
-#API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjhjMzFhYTEwLTRkYTYtNGJmMi05NjkyLTViODM4ODg3YmNhYyIsImlhdCI6MTc4NjQxODIyMiwic3ViIjoiZGV2ZWxvcGVyL2ZlMzA3MDZmLWJkNjgtNGFjOC04ZGQ1LTFkMDVjZTBhNTFmMyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE4Ny4xMy4xNDMuMjA0Il0sInR5cGUiOiJjbGllbnQifV19._tOYShTW-u0DO58wfHpqPFKMjzqV6xkwZ1mwse4lfd2qmH8LOKLKZb21Q78xOuMTZ0CiVX6iPi3x0xeph1vOdQ"
-'''
-with open("coc_clan_data.csv", "a", newline="") as clanscv:
-    writer = csv.DictWriter(clanscv, fieldnames=clanFields)
-    writer.writeheader()
+    def getCapitalRaidSeason(self):
+        encoded_tag = self.clanTag.replace("#", "%23")
+        url = f"https://api.clashofclans.com/v1/clans/{encoded_tag}/capitalraidseasons"
 
-    for tag in clanTags:
-        clan = Clan(API_TOKEN, tag)
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self.apiToken}"
+        }
 
-        data = clan.queryClan(clanFields)
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
 
-        writer.writerow(data)
-'''
+        return response.json()["items"]

@@ -158,3 +158,38 @@ class dbHelper():
                 })
 
         self.conn.commit()
+
+    def addRaidSeasons(self, raidSeason):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                INSERT INTO raid_seasons (
+                    state,
+                    raid_start,
+                    raid_end,
+                    total_loot,
+                    raid_count,
+                    attack_count,
+                    destr_districts,
+                    offensive_reward,
+                    defensive_reward,
+                    total_defense_loot,
+                    defense_attack_count,
+                    defense_destr_districts
+                )
+                VALUES (
+                    %(state)s,
+                    %(raidStart)s,
+                    %(raidEnd)s,
+                    %(totalLoot)s,
+                    %(raidCount)s,
+                    %(attackCount)s,
+                    %(destrDistrictCount)s,
+                    %(offenseReward)s,
+                    %(defenseReward)s,
+                    %(defenseLoot)s,
+                    %(defenseAttacks)s,
+                    %(defenseDestrDistrictCount)s
+                )
+            """, raidSeason)
+
+        self.conn.commit()

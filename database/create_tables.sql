@@ -128,7 +128,7 @@ create table if not exists raid_districts (
   district_name varchar(40),
   district_hall_level int,
   stars int,
-  distruction_percent float,
+  destruction_percent float,
   attack_count int,
   total_looted int,
   primary key (raid_district_ID),

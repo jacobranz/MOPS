@@ -1,9 +1,12 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class dbHelper():
     def __init__(self):
-        #db_url = "postgresql://postgres:[password]@db.ebujagqqgpbkvevfuqjl.supabase.co:5432/postgres"
-        self.db_url="postgresql://postgres.ebujagqqgpbkvevfuqjl:UoIyrlQRSCjzRtaE@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+        self.db_url = os.getenv("DB_URL")
 
         self.conn = psycopg2.connect(self.db_url)
 

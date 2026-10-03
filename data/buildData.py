@@ -1,4 +1,4 @@
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import json
 
@@ -9,7 +9,7 @@ class playerData():
         return player
 
 class War():
-    def __init__(self, data):
+    def __init__(self, data=None):
         self.data = data
 
     def parseWar(self):
@@ -82,6 +82,69 @@ class War():
 
     def getAttacks(self):
         pass
+
+    def plotWarHist(self, warData):
+        self.dates = []
+        self.destrPercent = []
+
+        for war in warData:
+            self.dates.append(war[0])
+            self.destrPercent.append(war[7])
+
+
+        plt.scatter(self.dates, self.destrPercent)
+
+        plt.xlabel("War Date")
+        plt.ylabel("Destruction %")
+        plt.title("Clan Destruction % Over Time")
+
+        plt.ylim(0, 100)
+
+        plt.show()
+
+    def plotPlayerConsistency(self, playerData):
+        self.players = {}
+
+        for player, destruction in playerData:
+
+            if player not in self.players:
+                self.players[player] = []
+
+            self.players[player].append(destruction)
+
+        playerNames = list(self.players.keys())
+        destructionData = list(self.players.values())
+
+        height = max(8, len(playerNames) * 0.35)
+
+        plt.figure(figsize=(10, height))
+
+        plt.boxplot(
+            destructionData,
+            vert=False
+        )
+
+        plt.yticks(
+            range(1, len(playerNames) + 1),
+            playerNames,
+            fontsize=8
+        )
+
+        plt.xlabel("Player")
+        plt.ylabel("Destruction %")
+        plt.title("Player Destruction Consistency")
+
+        plt.xlim(0, 100)
+
+        plt.xticks(range(0, 101, 10))
+
+        plt.subplots_adjust(
+            left=0.25,
+            right=0.95,
+            top=0.95,
+            bottom=0.10
+        )   
+        plt.show()
 
 class CapitalRaid():
     def __init__(self, data):

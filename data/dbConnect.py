@@ -318,3 +318,37 @@ class dbHelper():
             })
 
             self.conn.commit()
+
+    def getWarDestrOvertime(self):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                SELECT 
+                    end_time, 
+                    clan_name,
+                    clan_attacks,
+                    clan_stars,
+                    opponent_name,
+                    opponent_stars,
+                    opponent_destructionper,
+                    clan_destructionper 
+                FROM wars
+                WHERE clan_name = 'Panda Supreme'
+                ORDER BY end_time;
+            """)
+
+            return self.cursor.fetchall()
+
+    def getPlayerDestruction(self):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                SELECT 
+                    wm.player_name,
+                    wa.attack_destrper
+                FROM war_attacks wa
+                JOIN war_members wm
+                    ON wa.war_memberid = wm.war_memberid
+                WHERE wa.attack_destrper IS NOT NULL
+                ORDER BY wm.player_name;
+            """)
+
+            return self.cursor.fetchall()

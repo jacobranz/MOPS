@@ -92,3 +92,8 @@ if getRaid == 1:
             raidMemberId = db.addRaidMembers(member, raidID)
 else:
     print("Raid data not running.")
+
+## Testing data plotting
+playerData = db.getPlayerDestruction()
+w = War()
+w.plotPlayerConsistency(playerData)

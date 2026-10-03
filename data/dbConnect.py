@@ -3,7 +3,7 @@ import psycopg2
 class dbHelper():
     def __init__(self):
         #db_url = "postgresql://postgres:[password]@db.ebujagqqgpbkvevfuqjl.supabase.co:5432/postgres"
-        self.db_url="postgresql://postgres.ebujagqqgpbkvevfuqjl:[password]@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+        self.db_url="postgresql://postgres.ebujagqqgpbkvevfuqjl:UoIyrlQRSCjzRtaE@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
 
         self.conn = psycopg2.connect(self.db_url)
 
@@ -223,3 +223,95 @@ class dbHelper():
 
             self.conn.commit()
             return self.raidMemberId
+
+    def addRaidLogs(self, raidLog, raidID):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                INSERT INTO raid_logs (
+                    raid_id,
+                    log_type,
+                    clan_tag,
+                    clan_name,
+                    clan_level,
+                    attack_count,
+                    district_count,
+                    districts_destroyed
+                )
+                VALUES (
+                    %(raidId)s.
+                    %(logType)s,
+                    %(clanTag)s,
+                    %(clanName)s,
+                    %(clanLevel)s,
+                    %(attackCount)s,
+                    %(districtCount)s,
+                    %(districtsDestroyed)s
+                )
+                RETURNING raid_log_id
+            """, {
+                **raidLog,
+                "raidID": raidID
+            })
+
+            self.raidLogId = self.cursor.fetchone()[0]
+
+            self.conn.commit()
+            return self.raidLogId
+
+    def addRaidDistricts(self, raidDistrict, raidLogID):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                INSERT INTO raid_districts (
+                    raid_log_id,
+                    district_id,
+                    district_name,
+                    district_hall_level,
+                    stars,
+                    destruction_percent,
+                    attack_count,
+                    total_loot
+                )
+                VALUES (
+                    %(raidLogId)s,
+                    %(districtID)s,
+                    %(districtName)s,
+                    %(districtHallLevel)s,
+                    %(stars)s,
+                    %(destructionPercentage)s,
+                    %(attackCount)s,
+                    %(totalLoot)s
+                )
+                RETURNING raid_district_id
+            """, {
+                **raidDistrict,
+                "raidLogId": raidLogID
+            })
+
+            self.raidDistrictId = self.cursor.fetchone()[0]
+
+            self.conn.commit()
+            return self.raidDistrictId
+
+    def addRaidAttacks(self, raidAttack, raidDistrictID):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                INSERT INTO raid_attacks (
+                    raid_district_id,
+                    attacker_tag,
+                    attacker_name,
+                    destruction_percent,
+                    stars
+                )
+                VALUES (
+                    %(raidDistrictId)s,
+                    %(attackerTag)s,
+                    %(attackerName)s,
+                    %(destrPercent)s,
+                    %(stars)s
+                )
+            """, {
+                **raidAttack,
+                "raidDistrictId": raidDistrictID
+            })
+
+            self.conn.commit()

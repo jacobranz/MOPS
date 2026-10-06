@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 getWar = 0
 getRaid = 0
 #"#2PUGJQ82G"
+#"#2Q2YL8VGO"
 
 playerTags = [
 ]
@@ -90,10 +91,28 @@ if getRaid == 1:
         members = raid.parseRaidMembers()
         for member in members:
             raidMemberId = db.addRaidMembers(member, raidID)
+
+        logs = raid.parseRaidLogs()
+        for log in logs:
+            raidLogId = db.addRaidLogs(log, raidID)
+
+            districts = raid.parseRaidDistricts()
+            for district in districts:
+                if district["logIndex"] != log["logIndex"]:
+                    continue
+
+                raidDistrictId = db.addRaidDistricts(district, raidLogId)
+
+                attacks = raid.parseRaidAttacks()
+                for attack in attacks:
+                    if attack["logIndex"] != log["logIndex"]:
+                        continue
+
+                    db.addRaidAttacks(attack, raidDistrictId)
 else:
     print("Raid data not running.")
 
 ## Testing data plotting
-playerData = db.getPlayerDestruction()
-w = War()
-w.plotPlayerConsistency(playerData)
+#playerData = db.getPlayerDestruction()
+#w = War()
+#w.plotPlayerConsistency(playerData)

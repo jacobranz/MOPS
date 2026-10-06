@@ -181,23 +181,25 @@ class CapitalRaid():
     def parseRaidLogs(self):
         self.logs = []
 
-        for log in self.data["attackLog"]:
+        for logIndex, log in enumerate(self.data["attackLog"], start=1):
             self.logs.append({
+                "logIndex": logIndex,
                 "logType": "attack",
                 "clanTag": log["defender"]["tag"],
                 "clanName": log["defender"]["name"],
-                "clanLevel": log["defender"]["clanLevel"],
+                "clanLevel": log["defender"]["level"],
                 "attackCount": log["attackCount"],
                 "districtCount": log["districtCount"],
                 "districtsDestroyed": log["districtsDestroyed"]
             })
 
-        for log in self.data["defenseLog"]:
+        for logIndex, log in enumerate(self.data["defenseLog"], start=len(self.logs) + 1):
             self.logs.append({
+                "logIndex": logIndex,
                 "logType": "defense",
                 "clanTag": log["attacker"]["tag"],
                 "clanName": log["attacker"]["name"],
-                "clanLevel": log["attacker"]["clanLevel"],
+                "clanLevel": log["attacker"]["level"],
                 "attackCount": log["attackCount"],
                 "districtCount": log["districtCount"],
                 "districtsDestroyed": log["districtsDestroyed"]
@@ -208,28 +210,30 @@ class CapitalRaid():
     def parseRaidDistricts(self):
         self.districts = []
 
-        for log in self.data["attackLog"]:
+        for logIndex, log in enumerate(self.data["attackLog"], start=1):
             for district in log["districts"]:
                 self.districts.append({
+                    "logIndex": logIndex,
                     "districtID": district["id"],
                     "districtName": district["name"],
                     "stars": district["stars"],
                     "districtHallLevel": district["districtHallLevel"],
                     "destructionPercentage": district["destructionPercent"],
                     "attackCount": district["attackCount"],
-                    "totalLoot": district["totalLooted"]
+                    "totalLooted": district["totalLooted"]
                 })
 
-        for log in self.data["defenseLog"]:
+        for logIndex, log in enumerate(self.data["defenseLog"], start=len(self.logs) + 1):
             for district in log["districts"]:
                 self.districts.append({
+                    "logIndex": logIndex,
                     "districtID": district["id"],
                     "districtName": district["name"],
                     "districtHallLevel": district["districtHallLevel"],
                     "stars": district["stars"],
                     "destructionPercentage": district["destructionPercent"],
                     "attackCount": district["attackCount"],
-                    "totalLoot": district["totalLooted"]
+                    "totalLooted": district["totalLooted"]
                 })
 
         return self.districts
@@ -237,20 +241,24 @@ class CapitalRaid():
     def parseRaidAttacks(self):
         self.attacks = []
 
-        for log in self.data["attackLog"]:
+        for logIndex, log in enumerate(self.data["attackLog"], start=1):
             for district in log["districts"]:
-                for attacker in district["attacks"]:
+                for attacker in district.get("attacks", []):
                     self.attacks.append({
+                        "logIndex": logIndex,
+                        "districtId": district["id"],
                         "tag": attacker["attacker"]["tag"],
                         "name": attacker["attacker"]["name"],
                         "destrPercent": attacker["destructionPercent"],
                         "stars": attacker["stars"]
                     })
 
-        for log in self.data["defenseLog"]:
+        for logIndex, log in enumerate(self.data["defenseLog"], start=len(self.attacks) + 1):
             for district in log["districts"]:
-                for attacker in district["attacks"]:
+                for attacker in district.get("attacks", []):
                     self.attacks.append({
+                        "logIndex": logIndex,
+                        "districtId": district["id"],
                         "tag": attacker["attacker"]["tag"],
                         "name": attacker["attacker"]["name"],
                         "destrPercent": attacker["destructionPercent"],

@@ -241,7 +241,7 @@ class dbHelper():
                     districts_destroyed
                 )
                 VALUES (
-                    %(raidId)s.
+                    %(raidID)s,
                     %(logType)s,
                     %(clanTag)s,
                     %(clanName)s,
@@ -272,7 +272,7 @@ class dbHelper():
                     stars,
                     destruction_percent,
                     attack_count,
-                    total_loot
+                    total_looted
                 )
                 VALUES (
                     %(raidLogId)s,
@@ -282,7 +282,7 @@ class dbHelper():
                     %(stars)s,
                     %(destructionPercentage)s,
                     %(attackCount)s,
-                    %(totalLoot)s
+                    %(totalLooted)s
                 )
                 RETURNING raid_district_id
             """, {
@@ -300,15 +300,15 @@ class dbHelper():
             self.cursor.execute("""
                 INSERT INTO raid_attacks (
                     raid_district_id,
-                    attacker_tag,
-                    attacker_name,
+                    tag,
+                    name,
                     destruction_percent,
                     stars
                 )
                 VALUES (
                     %(raidDistrictId)s,
-                    %(attackerTag)s,
-                    %(attackerName)s,
+                    %(tag)s,
+                    %(name)s,
                     %(destrPercent)s,
                     %(stars)s
                 )

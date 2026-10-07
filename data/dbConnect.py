@@ -379,3 +379,19 @@ class dbHelper():
             """)
 
             return self.cursor.fetchall()
+
+    def getAttackEfficiency(self):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                SELECT
+                    war_id,
+                    end_time,
+                    team_size,
+                    clan_attacks,
+                    clan_stars,
+                    clan_destructionper
+                FROM wars
+                ORDER BY end_time;
+            """)
+
+            return self.cursor.fetchall()

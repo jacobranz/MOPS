@@ -4,6 +4,7 @@ from data.buildData import War
 from data.buildData import CapitalRaid
 from data.dbConnect import dbHelper
 import os
+import json
 from dotenv import load_dotenv
 
 getWar = 0
@@ -14,7 +15,7 @@ getRaid = 0
 playerTags = [
 ]
 clanTags = [
-    "#2PUGJQ82G"
+    "#2Q2YL8VGO"
 ]
 
 ## Load env vars
@@ -48,13 +49,13 @@ def getCapitalRaids():
         clan = Clan(API_TOKEN, tag)
         return clan.getCapitalRaidSeason()["items"]
 
-#with open("data.json", "w") as f:
-#    json.dump(getCapitalRaids(), f)
+with open("data.json", "w") as f:
+    json.dump(getWarLog(), f)
 
-#for warData in getWarLog()['items']:
-#    war = War(warData)
-#    result = war.parseWar()
-#    db.addWar(result)
+for warData in getWarLog()['items']:
+    war = War(warData)
+    result = war.parseWar()
+    db.addWar(result)
 
 if getWar == 1:
     war = War(getCurrentWar())
@@ -113,6 +114,6 @@ else:
     print("Raid data not running.")
 
 ## Testing data plotting
-playerData = db.getWarParticipation()
+playerData = db.getAttackEfficiency()
 w = War()
-w.plotWarParticipation(playerData)
+w.plotAttackEfficiency(playerData)

@@ -248,8 +248,8 @@ class War():
 
         plt.figure(
             figsize=(
-                max(10, len(warIDs) * 0.7),
-                max(8, len(playerNames) * 0.5)
+                max(15, len(warIDs) * 0.7),
+                max(10, len(playerNames) * 0.6)
             )
         )
 
@@ -282,6 +282,61 @@ class War():
             top=0.95,
             bottom=0.25
         )
+
+        plt.show()
+
+    def plotAttackEfficiency(self, attackData):
+        attackUsage = []
+        destruction = []
+        stars = []
+        warIDs = []
+
+        for warID, endTime, teamSize, clanAttacks, clanStars, clanDestruction in attackData:
+            if teamSize is None or teamSize == 0:
+                continue
+
+            if clanAttacks is None or clanDestruction is None or clanStars is None:
+                continue
+
+            availableAttacks = teamSize * 2
+
+            usage = (clanAttacks / availableAttacks) * 100
+
+            attackUsage.append(usage)
+            destruction.append(clanDestruction)
+            stars.append(clanStars)
+            warIDs.append(warID)
+
+        plt.figure(figsize=(10, 6))
+
+        plt.scatter(
+            attackUsage,
+            destruction,
+            s=[50 + (star * 10) for star in stars],
+            alpha=0.7
+        )
+
+        for i, warID in enumerate(warIDs):
+            plt.annotate(
+                str(warID),
+                (attackUsage[i], destruction[i]),
+                xytext=(5, 5),
+                textcoords="offset points",
+                fontsize=8
+            )
+
+        plt.xlabel("Attack Usage %")
+        plt.ylabel("Destruction %")
+
+        plt.title("Attack Efficiency")
+
+        plt.xlim(0, 100)
+        plt.ylim(0, 100)
+
+        plt.xticks(range(0, 101, 10))
+        plt.yticks(range(0, 101, 10))
+
+        plt.grid()
 
         plt.show()
 

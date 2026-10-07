@@ -14,7 +14,7 @@ getRaid = 0
 playerTags = [
 ]
 clanTags = [
-    "#2Q2YL8VGO"
+    "#2PUGJQ82G"
 ]
 
 ## Load env vars
@@ -113,6 +113,6 @@ else:
     print("Raid data not running.")
 
 ## Testing data plotting
-#playerData = db.getPlayerDestruction()
-#w = War()
-#w.plotPlayerConsistency(playerData)
+playerData = db.getPlayerStars()
+w = War()
+w.plotStarPerPlayer(playerData)

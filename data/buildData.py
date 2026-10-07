@@ -146,6 +146,78 @@ class War():
         )   
         plt.show()
 
+    def plotStarPerPlayer(self, playerData):
+        self.players = {}
+
+        for player, stars in playerData:
+            if player not in self.players:
+                self.players[player] = []
+
+            self.players[player].append(stars)
+
+        playerNames = list(self.players.keys())
+
+        starCounts = []
+
+        for player in playerNames:
+            zeroStars = self.players[player].count(0)
+            oneStar = self.players[player].count(1)
+            twoStars = self.players[player].count(2)
+            threeStars = self.players[player].count(3)
+
+            starCounts.append([
+                zeroStars,
+                oneStar,
+                twoStars,
+                threeStars
+            ])
+
+        starCounts = list(zip(*starCounts))
+
+        plt.figure(figsize=(12, max(8, len(playerNames) * 0.35)))
+
+        plt.barh(
+            playerNames,
+            starCounts[0],
+            label="0 Stars"
+        )
+
+        plt.barh(
+            playerNames,
+            starCounts[1],
+            label="1 Stars"
+        )
+
+        plt.barh(
+            playerNames,
+            starCounts[2],
+            left=[
+                starCounts[0][i] + starCounts[1][i]
+                for i in range(len(playerNames))
+            ],
+            label="2 Stars"
+        )
+
+        plt.barh(
+            playerNames,
+            starCounts[3],
+            left=[
+                starCounts[0][i] +
+                starCounts[1][i] +
+                starCounts[2][i]
+                for i in range(len(playerNames))
+            ],
+            label="3 Stars"
+        )
+
+        plt.xlabel("Number of Attacks")
+        plt.ylabel("Player")
+        plt.title("Player Star Distribution")
+
+        plt.legend()
+
+        plt.show()
+
 class CapitalRaid():
     def __init__(self, data):
         self.data = data

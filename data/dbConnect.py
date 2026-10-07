@@ -352,3 +352,18 @@ class dbHelper():
             """)
 
             return self.cursor.fetchall()
+
+    def getPlayerStars(self):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                SELECT
+                    wm.player_name,
+                    wa.attack_stars
+                FROM war_attacks wa
+                JOIN war_members wm
+                    ON wa.war_memberid = wm.war_memberid
+                WHERE wa.attack_stars IS NOT NULL
+                ORDER BY wm.player_name;
+            """)
+
+            return self.cursor.fetchall()

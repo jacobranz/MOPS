@@ -218,6 +218,73 @@ class War():
 
         plt.show()
 
+    def plotWarParticipation(self, playerData):
+
+        self.players = {}
+
+        for player, warID in playerData:
+            if player not in self.players:
+                self.players[player] = set()
+
+            self.players[player].add(warID)
+
+        playerNames = list(self.players.keys())
+
+        warIDs = sorted(
+            set(warID for player, warID in playerData)
+        )
+
+        participationData = []
+
+        for player in playerNames:
+            row = []
+            for warID in warIDs:
+                if warID in self.players[player]:
+                    row.append(1)
+                else:
+                    row.append(0)
+
+            participationData.append(row)
+
+        plt.figure(
+            figsize=(
+                max(10, len(warIDs) * 0.7),
+                max(8, len(playerNames) * 0.5)
+            )
+        )
+
+        plt.imshow(participationData, aspect="auto")
+
+        plt.xticks(
+            range(len(warIDs)),
+            warIDs,
+            rotation=90,
+            fontsize=8
+        )
+
+        plt.yticks(
+            range(len(playerNames)),
+            playerNames,
+            fontsize=8
+        )
+
+        plt.xlabel("War ID")
+        plt.ylabel("Player")
+        plt.title("Player War Participation")
+
+        plt.colorbar(
+            label="Participation"
+        )
+
+        plt.subplots_adjust(
+            left=0.25,
+            right=0.95,
+            top=0.95,
+            bottom=0.25
+        )
+
+        plt.show()
+
 class CapitalRaid():
     def __init__(self, data):
         self.data = data

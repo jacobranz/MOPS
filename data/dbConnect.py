@@ -367,3 +367,15 @@ class dbHelper():
             """)
 
             return self.cursor.fetchall()
+
+    def getWarParticipation(self):
+        with self.conn.cursor() as self.cursor:
+            self.cursor.execute("""
+                SELECT
+                    wm.player_name,
+                    wm.war_id
+                FROM war_members wm
+                ORDER BY wm.player_name, wm.war_id;
+            """)
+
+            return self.cursor.fetchall()

@@ -113,6 +113,6 @@ else:
     print("Raid data not running.")
 
 ## Testing data plotting
-playerData = db.getPlayerStars()
+playerData = db.getWarParticipation()
 w = War()
-w.plotStarPerPlayer(playerData)
+w.plotWarParticipation(playerData)

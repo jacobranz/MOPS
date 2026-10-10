@@ -201,13 +201,19 @@ class dbHelper():
                     %(offenseReward)s,
                     %(defenseReward)s
                 )
+                ON CONFLICT (raid_start, total_loot, raid_count, attack_count, offensive_reward)
+                DO NOTHING
                 RETURNING raid_ID
             """, raidSeason)
 
-            self.raidId = self.cursor.fetchone()[0]
+            self.raidId = self.cursor.fetchone()
 
             self.conn.commit()
-            return self.raidId
+
+            if self.raidId:
+                return self.raidId[0]
+
+            return None
 
     def addRaidMembers(self, raidMember, raidSeason):
         with self.conn.cursor() as self.cursor:
@@ -230,16 +236,22 @@ class dbHelper():
                     %(bonusAttackLimit)s,
                     %(resourcesLooted)s
                 )
+                ON CONFLICT (raid_id, tag, resources_looted)
+                DO NOTHING
                 RETURNING raid_member_id
             """, {
                 **raidMember,
                 "raidID": raidSeason
             })
 
-            self.raidMemberId = self.cursor.fetchone()[0]
+            self.raidMemberId = self.cursor.fetchone()
 
             self.conn.commit()
-            return self.raidMemberId
+
+            if self.raidMemberId:
+                return self.raidMemberId[0]
+
+            return None
 
     def addRaidLogs(self, raidLog, raidID):
         with self.conn.cursor() as self.cursor:
@@ -264,16 +276,22 @@ class dbHelper():
                     %(districtCount)s,
                     %(districtsDestroyed)s
                 )
+                ON CONFLICT (raid_id, log_type, clan_tag, attack_count, district_count)
+                DO NOTHING
                 RETURNING raid_log_id
             """, {
                 **raidLog,
                 "raidID": raidID
             })
 
-            self.raidLogId = self.cursor.fetchone()[0]
+            self.raidLogId = self.cursor.fetchone()
 
             self.conn.commit()
-            return self.raidLogId
+
+            if self.raidLogId:
+                return self.raidLogId
+
+            return None
 
     def addRaidDistricts(self, raidDistrict, raidLogID):
         with self.conn.cursor() as self.cursor:
@@ -298,16 +316,22 @@ class dbHelper():
                     %(attackCount)s,
                     %(totalLooted)s
                 )
+                ON CONFLICT (raid_log_id, district_id, attack_count, total_looted)
+                DO NOTHING
                 RETURNING raid_district_id
             """, {
                 **raidDistrict,
                 "raidLogId": raidLogID
             })
 
-            self.raidDistrictId = self.cursor.fetchone()[0]
+            self.raidDistrictId = self.cursor.fetchone()
 
             self.conn.commit()
-            return self.raidDistrictId
+
+            if self.raidDistrictId:
+                return self.raidDistrictId
+
+            return None
 
     def addRaidAttacks(self, raidAttack, raidDistrictID):
         with self.conn.cursor() as self.cursor:

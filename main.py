@@ -8,7 +8,7 @@ import json
 from dotenv import load_dotenv
 
 getWar = 1
-getRaid = 0
+getRaid = 1
 #"#2PUGJQ82G"
 #"#2Q2YL8VGO"
 
@@ -92,6 +92,10 @@ if getRaid == 1:
         raid = CapitalRaid(raidData)
         result = raid.parseRaids()
         raidID = db.addRaidSeasons(result)
+
+        if raidID is None:
+            print("Raid already exists! Skipping raid info.")
+            continue
 
         members = raid.parseRaidMembers()
         for member in members:

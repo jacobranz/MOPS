@@ -7,7 +7,7 @@ import os
 import json
 from dotenv import load_dotenv
 
-getWar = 0
+getWar = 1
 getRaid = 0
 #"#2PUGJQ82G"
 #"#2Q2YL8VGO"
@@ -62,23 +62,27 @@ if getWar == 1:
     result = war.parseCurrentWar()
     warId = db.addCurrentWar(result)
 
-    members = getCurrentWarMembers()
-    for member in members["clan"]:
-        warMember = War(member)
-        memberResult = warMember.parseWarMembers()
-        warMemberId = db.addWarMembers(memberResult, warId)
-        for attack in member.get("attacks", []):
-            warAttack = War(attack)
-            attackResult = warAttack.parseWarAttacks()
-            db.addWarAttacks(attackResult, warMemberId)
-    for opponent in members["opponent"]:
-        opponentMember = War(opponent)
-        opponentResult = opponentMember.parseWarMembers()
-        warOpponentId = db.addWarMembers(opponentResult, warId)
-        for attack in opponent.get("attacks", []):
-            warAttack = War(attack)
-            attackResult = warAttack.parseWarAttacks()
-            db.addWarAttacks(attackResult, warOpponentId)
+    if warId is None:
+        print("War already exists! Skipping members and attacks.")
+
+    else:
+        members = getCurrentWarMembers()
+        for member in members["clan"]:
+            warMember = War(member)
+            memberResult = warMember.parseWarMembers()
+            warMemberId = db.addWarMembers(memberResult, warId)
+            for attack in member.get("attacks", []):
+                warAttack = War(attack)
+                attackResult = warAttack.parseWarAttacks()
+                db.addWarAttacks(attackResult, warMemberId)
+        for opponent in members["opponent"]:
+            opponentMember = War(opponent)
+            opponentResult = opponentMember.parseWarMembers()
+            warOpponentId = db.addWarMembers(opponentResult, warId)
+            for attack in opponent.get("attacks", []):
+                warAttack = War(attack)
+                attackResult = warAttack.parseWarAttacks()
+                db.addWarAttacks(attackResult, warOpponentId)
 else:
     print("War data not running.")
 
@@ -112,8 +116,3 @@ if getRaid == 1:
                     db.addRaidAttacks(attack, raidDistrictId)
 else:
     print("Raid data not running.")
-
-## Testing data plotting
-playerData = db.getAttackEfficiency()
-w = War()
-w.plotAttackEfficiency(playerData)

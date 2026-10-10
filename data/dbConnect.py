@@ -60,7 +60,7 @@ class dbHelper():
         else:
             with self.conn.cursor() as self.cursor:
                 self.cursor.execute("""
-                    INSERT INTO current_wars (
+                    INSERT INTO current_wars_test (
                         team_size,
                         battle_mod,
                         prep_start,
@@ -98,18 +98,24 @@ class dbHelper():
                         %(opponentStars)s,
                         %(opponentDestrPer)s
                     )
+                    ON CONFLICT (clan_tag, war_end)
+                    DO NOTHING
                     RETURNING war_id
                     """, currentWar)
 
-                self.warId = self.cursor.fetchone()[0]
+                self.warId = self.cursor.fetchone()
 
                 self.conn.commit()
-                return self.warId
+
+                if self.warId:
+                    return self.warId[0]
+
+                return None
 
     def addWarMembers(self, warMembers, warID):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO war_members (
+                INSERT INTO war_members_test (
                     war_id,
                     player_tag,
                     player_name,
@@ -123,21 +129,27 @@ class dbHelper():
                     %(playerThLevel)s,
                     %(playerMapPos)s
                 )
+                ON CONFLICT (war_id, player_tag)
+                DO NOTHING
                 RETURNING war_memberid
             """, {
                 **warMembers,
                 "warID": warID
             })
 
-            self.warMemberId = self.cursor.fetchone()[0]
+            self.warMemberId = self.cursor.fetchone()
 
             self.conn.commit()
-            return self.warMemberId
+
+            if self.warMemberId:
+                return self.warMemberId[0]
+
+            return None
 
     def addWarAttacks(self, warAttack, warMemberID):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO war_attacks (
+                INSERT INTO war_attacks_test (
                     war_memberid,
                     attacker_tag,
                     defender_tag,
@@ -155,6 +167,8 @@ class dbHelper():
                     %(attackOrder)s,
                     %(attackDuration)s
                 )
+                ON CONFLICT (war_memberid, attack_order)
+                DO NOTHING
                 """, {
                     **warAttack,
                     "warMemberID": warMemberID
@@ -165,7 +179,7 @@ class dbHelper():
     def addRaidSeasons(self, raidSeason):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO raid_seasons (
+                INSERT INTO raid_seasons_test (
                     state,
                     raid_start,
                     raid_end,
@@ -198,7 +212,7 @@ class dbHelper():
     def addRaidMembers(self, raidMember, raidSeason):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO raid_members (
+                INSERT INTO raid_members_test (
                     raid_id,
                     tag,
                     name,
@@ -230,7 +244,7 @@ class dbHelper():
     def addRaidLogs(self, raidLog, raidID):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO raid_logs (
+                INSERT INTO raid_logs_test (
                     raid_id,
                     log_type,
                     clan_tag,
@@ -264,7 +278,7 @@ class dbHelper():
     def addRaidDistricts(self, raidDistrict, raidLogID):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO raid_districts (
+                INSERT INTO raid_districts_test (
                     raid_log_id,
                     district_id,
                     district_name,
@@ -298,7 +312,7 @@ class dbHelper():
     def addRaidAttacks(self, raidAttack, raidDistrictID):
         with self.conn.cursor() as self.cursor:
             self.cursor.execute("""
-                INSERT INTO raid_attacks (
+                INSERT INTO raid_attacks_test (
                     raid_district_id,
                     tag,
                     name,
